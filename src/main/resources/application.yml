@@ -1,0 +1,32 @@
+server: 
+  port: 8000
+spring: 
+  application:
+    name: venh-gateway
+  profiles:
+    active: dev
+  config: 
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    gateway:
+      routes:
+        - id: venh-msa
+          uri: lb://VENH
+          predicates:
+            - Path=/venh-msa/**
+        - id: venh-msa-support
+          uri: lb://VENH-SUPPORT
+          predicates:
+            - Path=/venh-msa-support/**
+    
+eureka:
+ client:
+  serviceUrl:
+    defaultZone: http://localhost:8761/eureka
+    
+#actuator config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
